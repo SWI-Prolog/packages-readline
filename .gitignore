@@ -1,0 +1,10 @@
+*~
+Makefile
+config.h
+config.h.in
+config.status
+configure
+autom4te.cache
+*.o
+*.so
+*.dylib
