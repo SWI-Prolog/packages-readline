@@ -9,19 +9,21 @@
 # Author: Jan Wielemaker (J.Wielemaker@vu.nl)
 ################################################################
 
-PACKAGE=pdt
-DOC=pdt
+PACKAGE=readline
+DOC=readline
 include ../Makefile.defs
+CFLAGS+= -I.
 
 LIBPL=		readline.pl
 TARGETS=	readline4pl.@SO@
+LIBS=@LIBS@
 
 RLOBJ=		readline4pl.o
 
 all:		$(TARGETS)
 
 readline4pl.@SO@:	$(RLOBJ)
-		$(LD) $(LDSOFLAGS) -o $@ $(RLOBJ) @LIBS@ $(LIBPLSO)
+		$(LD) $(LDSOFLAGS) -o $@ $(RLOBJ) $(LIBS) $(LIBPLSO)
 
 install:	$(TARGETS) $(LIBPL)
 		mkdir -p $(DESTDIR)$(SOLIBDIR)

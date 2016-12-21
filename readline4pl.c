@@ -42,32 +42,14 @@ This  module  only  depends  on  the  public  interface  as  defined  by
 SWI-Prolog.h and SWI-Stream.h
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-#ifdef __WINDOWS__
-#define PL_ARITY_AS_SIZE
-#else
-#include "pl-incl.h"
-#endif
 #include <string.h>
 #include <stdlib.h>
 #include "SWI-Stream.h"
 #include "SWI-Prolog.h"
-
-#ifdef __WINDOWS__
-#ifdef WIN64
-#include "config/win64.h"
-#else
-#include "config/win32.h"
-#endif
-#else
 #include <config.h>
-#endif
+#include <signal.h>
 
-/* Disabled if dmalloc() is used because the readline library is full of
-   leaks and freeing the line returned by readline is considered an
-   error by the dmalloc library
-*/
-
-#if defined(HAVE_LIBREADLINE) && defined(HAVE_READLINE_READLINE_H) && !defined(DMALLOC)
+#define DEBUG(level, g) (void)0
 
 static IOFUNCTIONS	rl_functions;	/* IO+Terminal+Readline functions */
 
@@ -175,8 +157,7 @@ sure this is true, but is certainly covers most installations.
 
 static foreign_t
 pl_rl_add_history(term_t text)
-{ GET_LD
-  atom_t a;
+{ atom_t a;
   static atom_t last = 0;
 
   if ( PL_get_atom_ex(text, &a) )
@@ -201,6 +182,19 @@ pl_rl_add_history(term_t text)
 }
 
 
+static int
+file_error(term_t fn, const char *op, int rc)
+{ switch(rc)
+  { case EPERM:
+      return PL_permission_error("file", op, fn);
+    case ENOENT:
+      return PL_existence_error("file", fn);
+    default:
+      return FALSE;				/* TBD */
+  }
+}
+
+
 static foreign_t
 pl_rl_write_history(term_t fn)
 { char *s;
@@ -212,9 +206,7 @@ pl_rl_write_history(term_t fn)
   if ( (rc=write_history(s)) == 0 )
     return TRUE;
 
-  errno = rc;
-  return PL_error(NULL, 0, MSG_ERRNO, ERR_FILE_OPERATION,
-		  ATOM_write, ATOM_file, fn);
+  return file_error(fn, "write", rc);
 }
 
 
@@ -230,9 +222,7 @@ pl_rl_read_history(term_t fn)
   if ( (rc=read_history(s)) == 0 )
     return TRUE;
 
-  errno = rc;
-  return PL_error(NULL, 0, MSG_ERRNO, ERR_FILE_OPERATION,
-		  ATOM_read, ATOM_file, fn);
+  return file_error(fn, "read", rc);
 }
 
 
@@ -329,9 +319,9 @@ rl_sighandler(int sig)
     { void (*func)(int) = s->old_state.sa_handler;
 
       if ( func == SIG_DFL )
-      { unblockSignal(sig);
+      { // TBD: unblockSignal(sig);
 	DEBUG(3, Sdprintf("Re-sending signal\n"));
-	raise(sig);			/* was: kill(getpid(), sig); */
+	PL_raise(sig);			/* was: kill(getpid(), sig); */
       } else if ( func != SIG_IGN )
       { (*func)(sig);
       }
@@ -342,27 +332,16 @@ rl_sighandler(int sig)
 
   DEBUG(3, Sdprintf("Resetting after signal\n"));
   prepare_signals();
-  rl_reset_after_signal ();
+  rl_reset_after_signal();
 }
 
 
 static char *
 pl_readline(const char *prompt)
-{ GET_LD
-  char *line;
+{ char *line;
 
   prepare_signals();
-  if ( HAS_LD )
-  { EXCEPTION_GUARDED({ line = readline(prompt);
-		      },
-		      { DEBUG(3, Sdprintf("Exception in readline()\n"));
-			line = NULL;
-			if ( !LD->signal.is_sync )
-			  unblockGC(0 PASS_LD);
-		      });
-  } else
-  { line = readline(prompt);
-  }
+  line = readline(prompt);
   restore_signals();
 
   return line;
@@ -436,16 +415,16 @@ reset_readline(void)
   }
 
   if ( my_prompt )
-    remove_string(my_prompt);
-  my_prompt = NULL;
+  { free(my_prompt);
+    my_prompt = NULL;
+  }
   in_readline = 0;
 }
 
 
 static ssize_t
 Sread_readline(void *handle, char *buf, size_t size)
-{ GET_LD
-  intptr_t h = (intptr_t)handle;
+{ intptr_t h = (intptr_t)handle;
   int fd = (int) h;
   int ttymode = PL_ttymode(Suser_input); /* Not so nice */
   int rval;
@@ -504,7 +483,7 @@ Sread_readline(void *handle, char *buf, size_t size)
 
       { char *oldp = my_prompt;
 
-	my_prompt = prompt ? store_string(prompt) : (char *)NULL;
+	my_prompt = prompt ? strdup(prompt) : (char *)NULL;
 
 	if ( sig_at_level == in_readline )
 	{ sig_at_level = -1;
@@ -527,7 +506,7 @@ Sread_readline(void *handle, char *buf, size_t size)
 	in_readline--;
 
 	if ( my_prompt )
-	  remove_string(my_prompt);
+	  free(my_prompt);
 	my_prompt = oldp;
       }
 
@@ -620,16 +599,13 @@ non-null.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 install_t
-PL_install_readline(void)
-{ GET_LD
-  access_level_t alevel;
-
+install_readline(void)
+{
 #ifndef __WINDOWS__
-  if ( !truePrologFlag(PLFLAG_TTY_CONTROL) || !isatty(0) )
+  if ( !isatty(0) )
     return;
 #endif
 
-  alevel = setAccessLevel(ACCESS_LEVEL_SYSTEM);
   rl_catch_signals = 0;
   rl_readline_name = "Prolog";
   rl_attempted_completion_function = prolog_completion;
@@ -663,14 +639,5 @@ PL_install_readline(void)
   PL_set_prolog_flag("readline",    PL_BOOL, TRUE);
   PL_set_prolog_flag("tty_control", PL_BOOL, TRUE);
   PL_license("gpl", "GNU Readline library");
-  setAccessLevel(alevel);
 }
 
-#else /*HAVE_LIBREADLINE*/
-
-install_t
-PL_install_readline(void)
-{
-}
-
-#endif /*HAVE_LIBREADLINE*/
