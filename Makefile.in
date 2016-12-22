@@ -12,7 +12,7 @@
 PACKAGE=readline
 DOC=readline
 include ../Makefile.defs
-CFLAGS+= -I.
+CFLAGS+= -I. @CIFLAGS@
 
 LIBPL=		readline.pl
 TARGETS=	readline4pl.@SO@

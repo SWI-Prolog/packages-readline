@@ -4,6 +4,8 @@ AC_INIT(install-sh)
 AC_PREREQ([2.50])
 AC_CONFIG_HEADER(config.h)
 
+AC_SUBST(CIFLAGS)
+
 m4_include([../ac_swi_c.m4])
 
 dnl Hacks for MacOS handling of libreadline.  We want to prefer the MacOS X
@@ -14,7 +16,7 @@ dnl /opt/local and Brew in /usr/local, so we try both.
 case "$PLARCH" in
   *darwin*)
 	if test -z "$RLPREFIX"; then
-	  if test -f /opt/local/lib/libreadline.$SO_EXT; then
+	  if test -f /opt/local/lib/libreadline.$SO; then
 	    RLPREFIX=/opt/local
 	  else
 	    RLPREFIX=/usr/local
@@ -41,7 +43,7 @@ AC_CACHE_CHECK([for $1], [ac_var],
 ])
 
 if test ! -z "$RLPREFIX"; then
-  AC_MSG_CHECKING(Whether setting for RLPREFIX is ok)
+  AC_MSG_CHECKING(Whether setting for RLPREFIX ($RLPREFIX) ($SO) is ok)
   if test -f $RLPREFIX/include/readline/readline.h -a \
 	  -f $RLPREFIX/lib/libreadline.$SO; then
     LIBS="$LIBS $RLPREFIX/lib/libreadline.$SO"
@@ -56,6 +58,7 @@ if test ! -z "$RLPREFIX"; then
     fi
     ocflags="$CFLAGS"
     CFLAGS="-I$RLPREFIX/include $CFLAGS"
+    CIFLAGS="-I$RLPREFIX/include"
     AC_CHECK_FUNCS(rl_completion_matches rl_insert_close)
     AC_CHECK_FUNCS(rl_set_prompt rl_clear_pending_input)
     AC_CHECK_FUNCS(rl_event_hook rl_cleanup_after_signal)
