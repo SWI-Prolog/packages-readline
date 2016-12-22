@@ -43,8 +43,8 @@ AC_CACHE_CHECK([for $1], [ac_var],
 if test ! -z "$RLPREFIX"; then
   AC_MSG_CHECKING(Whether setting for RLPREFIX is ok)
   if test -f $RLPREFIX/include/readline/readline.h -a \
-	  -f $RLPREFIX/lib/libreadline.$SO_EXT; then
-    LIBS="$LIBS $RLPREFIX/lib/libreadline.$SO_EXT"
+	  -f $RLPREFIX/lib/libreadline.$SO; then
+    LIBS="$LIBS $RLPREFIX/lib/libreadline.$SO"
     AC_MSG_RESULT(Using $RLPREFIX)
     AC_DEFINE(HAVE_LIBREADLINE, 1,
 	      [Define to 1 if you have libreadline])
