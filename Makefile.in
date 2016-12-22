@@ -64,11 +64,11 @@ check::
 # Documentation
 ################################################################
 
-TEXEXTRA=       readline.tex
+TEXEXTRA=       libreadline.tex
 $(TEX):         $(TEXEXTRA)
 
-readline.tex:	readline.pl
-		$(PLTOTEX) --section --out=pdtconsole $<
+libreadline.tex:	readline.pl
+		$(PLTOTEX) --section --out=libreadline $<
 
 ################################################################
 # Clean
