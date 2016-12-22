@@ -48,8 +48,8 @@ library provides emacs and vi based  editing   of  queries on the Prolog
 toplevel, including TAB-based completion and history.
 
 This library is by default  loaded   into  an interactive Prolog process
-that is connected to a (Unix) terminal. Loading can be stopped using the
-option `--no-readline`.
+that is connected to a  (Unix)  terminal.   Loading  can  be  stopped by
+setting the Prolog flag `readline` to `false`.
 
 @license Although the  interface  is   BSD-licensed,  the  GNU  readline
 library itself is covered by  the   GPL  (General  Public License). This
