@@ -599,7 +599,7 @@ non-null.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 install_t
-install_readline(void)
+install_readline4pl(void)
 {
 #ifndef __WINDOWS__
   if ( !isatty(0) )
