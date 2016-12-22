@@ -40,3 +40,37 @@
           ]).
 
 :- use_foreign_library(foreign(readline4pl)).
+
+/** <module> GNU readline interface
+
+This library binds GNU  libreadline  to   SWI-Prolog.  The  GNU readline
+library provides emacs and vi based  editing   of  queries on the Prolog
+toplevel, including TAB-based completion and history.
+
+This library is by default  loaded   into  an interactive Prolog process
+that is connected to a (Unix) terminal. Loading can be stopped using the
+option `--no-readline`.
+
+@license Although the  interface  is   BSD-licensed,  the  GNU  readline
+library itself is covered by  the   GPL  (General  Public License). This
+implies that loading this  library  in   an  application  makes all code
+loaded into the application subject to the GPL conditions.
+*/
+
+%!  rl_read_init_file(+File) is det.
+%
+%   Read a GNU readline config file.  See   the  GNU readline manual for
+%   details.
+
+%!  rl_add_history(+Line) is det.
+%
+%   Add a line to the history.
+
+%!  rl_write_history(+File) is det.
+%
+%   Save the history to File. This  can   be  reloaded in a next session
+%   using rl_read_history/1.
+
+%!  rl_read_history(+File) is det.
+%
+%   Read a saved history from File.
