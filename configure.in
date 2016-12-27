@@ -5,8 +5,12 @@ AC_PREREQ([2.50])
 AC_CONFIG_HEADER(config.h)
 
 AC_SUBST(CIFLAGS)
+AC_SUBST(TARGETS)
+AC_SUBST(PLTARGETS)
 
 m4_include([../ac_swi_c.m4])
+
+readline_ok=no
 
 dnl Hacks for MacOS handling of libreadline.  We want to prefer the MacOS X
 dnl libraries, but we need to get libreadline from Macports, as the BSD
@@ -56,7 +60,6 @@ if test ! -z "$RLPREFIX"; then
       AC_DEFINE(HAVE_READLINE_HISTORY_H, 1,
 		[Define to 1 if you have <readline/history.h>])
     fi
-    ocflags="$CFLAGS"
     CFLAGS="-I$RLPREFIX/include $CFLAGS"
     CIFLAGS="-I$RLPREFIX/include"
     AC_CHECK_FUNCS(rl_completion_matches rl_insert_close)
@@ -65,7 +68,7 @@ if test ! -z "$RLPREFIX"; then
     AC_CHECK_FUNCS(rl_filename_completion_function)
     AC_CHECK_FUNCS(rl_set_keyboard_input_timeout)
     AC_CHECK_DECLS([rl_done])
-    FreeBSD="$ocflags"
+    readline_ok=yes
   else
     AC_MSG_RESULT(no)
     RLPREFIX=
@@ -104,6 +107,11 @@ if test -z "$RLPREFIX"; then
       fi
     fi
   fi
+fi
+
+if test "$readline_ok" = yes; then
+  TARGETS=readline4pl.$SO
+  PLTARGETS=readline.pl
 fi
 
 AC_OUTPUT(Makefile)

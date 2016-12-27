@@ -14,9 +14,9 @@ DOC=readline
 include ../Makefile.defs
 CFLAGS+= -I. @CIFLAGS@
 
-LIBPL=		readline.pl
-TARGETS=	readline4pl.@SO@
-LIBS=@LIBS@
+LIBPL=		@PLTARGETS@
+TARGETS=	@TARGETS@
+LIBS=		@LIBS@
 
 RLOBJ=		readline4pl.o
 
