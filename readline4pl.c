@@ -155,25 +155,19 @@ that the readline library can only do   wide characters using UTF-8. Not
 sure this is true, but is certainly covers most installations.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+static char *hist_last = NULL;
+
 static foreign_t
 pl_rl_add_history(term_t text)
-{ atom_t a;
-  static atom_t last = 0;
+{ char *line;
 
-  if ( PL_get_atom_ex(text, &a) )
-  { char *txt;
-
-    if ( a != last )
-    { if ( last )
-	PL_unregister_atom(last);
-      last = a;
-      PL_register_atom(last);
-
-      if ( PL_get_chars(text, &txt, CVT_ATOM|REP_MB|CVT_EXCEPTION) )
-	add_history(txt);
-      else
-	return FALSE;
-    }
+  if ( PL_get_chars(text, &line, CVT_ATOM|CVT_STRING|REP_MB|CVT_EXCEPTION) )
+  { if ( hist_last && strcmp(hist_last,line) == 0 )
+      return FALSE;
+    if ( hist_last )
+      free(hist_last);
+    hist_last = strdup(line);
+    add_history(line);
 
     return TRUE;
   }
