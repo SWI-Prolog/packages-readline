@@ -74,3 +74,10 @@ loaded into the application subject to the GPL conditions.
 %!  rl_read_history(+File) is det.
 %
 %   Read a saved history from File.
+
+
+:- multifile
+    prolog:save_history_line/2.
+
+prolog:save_history_line(_Input, Line) :-
+    rl_add_history(Line).
