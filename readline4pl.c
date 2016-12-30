@@ -592,36 +592,41 @@ be synchronized PL_dispatch_hook(),  and  set  to   0  if  this  hook is
 non-null.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
+#ifdef __WINDOWS__
+#define isatty(fd) TRUE
+#endif
+
 install_t
 install_readline4pl(void)
-{
-#ifndef __WINDOWS__
-  if ( !isatty(0) )
-    return;
-#endif
+{ PL_license("gpl", "GNU Readline library");
 
-  rl_catch_signals = 0;
-  rl_readline_name = "Prolog";
-  rl_attempted_completion_function = prolog_completion;
+  if ( isatty(0) )
+  { rl_catch_signals = 0;
+    rl_readline_name = "Prolog";
+    rl_attempted_completion_function = prolog_completion;
 #ifdef __WINDOWS__
-  rl_basic_word_break_characters = "\t\n\"\\'`@$><= [](){}+*!,|%&?";
+    rl_basic_word_break_characters = "\t\n\"\\'`@$><= [](){}+*!,|%&?";
 #else
-  rl_basic_word_break_characters = ":\t\n\"\\'`@$><= [](){}+*!,|%&?";
+    rl_basic_word_break_characters = ":\t\n\"\\'`@$><= [](){}+*!,|%&?";
 #endif
-  rl_add_defun("prolog-complete", prolog_complete, '\t');
+    rl_add_defun("prolog-complete", prolog_complete, '\t');
 #if HAVE_RL_INSERT_CLOSE
-  rl_add_defun("insert-close", rl_insert_close, ')');
+    rl_add_defun("insert-close", rl_insert_close, ')');
 #endif
 #if HAVE_RL_SET_KEYBOARD_INPUT_TIMEOUT	/* see (*) */
-  rl_set_keyboard_input_timeout(20000);
+    rl_set_keyboard_input_timeout(20000);
 #endif
 
-  rl_functions = *Sinput->functions;	/* structure copy */
-  rl_functions.read = Sread_readline;	/* read through readline */
+    rl_functions = *Sinput->functions;	/* structure copy */
+    rl_functions.read = Sread_readline;	/* read through readline */
 
-  Sinput->functions  = &rl_functions;
-  Soutput->functions = &rl_functions;
-  Serror->functions  = &rl_functions;
+    Sinput->functions  = &rl_functions;
+    Soutput->functions = &rl_functions;
+    Serror->functions  = &rl_functions;
+
+    PL_set_prolog_flag("readline",    PL_BOOL, TRUE);
+    PL_set_prolog_flag("tty_control", PL_BOOL, TRUE);
+  }
 
 #define PRED(name, arity, func, attr) \
 	PL_register_foreign_in_module("system", name, arity, func, attr)
@@ -630,8 +635,5 @@ install_readline4pl(void)
   PRED("rl_add_history",    1, pl_rl_add_history,    PL_FA_NOTRACE);
   PRED("rl_write_history",  1, pl_rl_write_history,  0);
   PRED("rl_read_history",   1, pl_rl_read_history,   0);
-  PL_set_prolog_flag("readline",    PL_BOOL, TRUE);
-  PL_set_prolog_flag("tty_control", PL_BOOL, TRUE);
-  PL_license("gpl", "GNU Readline library");
 }
 
