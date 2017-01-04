@@ -624,7 +624,7 @@ install_readline4pl(void)
     Soutput->functions = &rl_functions;
     Serror->functions  = &rl_functions;
 
-    PL_set_prolog_flag("readline",    PL_BOOL, TRUE);
+    PL_set_prolog_flag("readline",    PL_ATOM, "true");
     PL_set_prolog_flag("tty_control", PL_BOOL, TRUE);
   }
 
