@@ -77,7 +77,11 @@ loaded into the application subject to the GPL conditions.
 
 
 :- multifile
-    prolog:save_history_line/2.
+    prolog:history/2.
 
-prolog:save_history_line(_Input, Line) :-
+prolog:history(_Input, add(Line)) :-
     rl_add_history(Line).
+prolog:history(_Input, load(File)) :-
+    rl_read_history(File).
+prolog:history(_Input, save(File)) :-
+    rl_write_history(File).
