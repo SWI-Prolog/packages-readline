@@ -32,6 +32,11 @@ esac
 AC_CHECK_FUNCS(poll)
 AC_CHECK_HEADERS(poll.h)
 
+AC_CHECK_LIB(ncursesw, main)
+if test ! "$ac_cv_lib_ncursesw_main" = "yes"; then
+  AC_CHECK_LIB(ncurses, main)
+fi
+
 AC_DEFUN([pl_RL_CHECK_VAR],
 [AS_VAR_PUSHDEF([ac_var], [ac_cv_libreadline_var_$1])dnl
 AC_CACHE_CHECK([for $1], [ac_var],
