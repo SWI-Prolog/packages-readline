@@ -3,7 +3,7 @@
     Author:        Jan Wielemaker
     E-mail:        J.Wielemaker@vu.nl
     WWW:           http://www.swi-prolog.org
-    Copyright (c)  2011-2016, University of Amsterdam
+    Copyright (c)  2011-2017, University of Amsterdam
                               VU University Amsterdam
     All rights reserved.
 
@@ -624,7 +624,7 @@ install_readline4pl(void)
     Soutput->functions = &rl_functions;
     Serror->functions  = &rl_functions;
 
-    PL_set_prolog_flag("readline",    PL_ATOM, "true");
+    PL_set_prolog_flag("readline",    PL_ATOM, "readline");
     PL_set_prolog_flag("tty_control", PL_BOOL, TRUE);
   }
 
