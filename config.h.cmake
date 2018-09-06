@@ -1,0 +1,21 @@
+#cmakedefine HAVE_DECL_RL_DONE
+#cmakedefine HAVE_LIBNCURSES
+#cmakedefine HAVE_LIBNCURSESW
+#cmakedefine HAVE_LIBREADLINE
+#cmakedefine HAVE_POLL
+#cmakedefine HAVE_POLL_H
+#cmakedefine HAVE_READLINE_HISTORY_H
+#cmakedefine HAVE_READLINE_READLINE_H
+#cmakedefine HAVE_RL_CLEANUP_AFTER_SIGNAL
+#cmakedefine HAVE_RL_CLEAR_PENDING_INPUT
+#cmakedefine HAVE_RL_COMPLETION_MATCHES
+#cmakedefine HAVE_RL_DONE
+#cmakedefine HAVE_RL_EVENT_HOOK
+#cmakedefine HAVE_RL_FILENAME_COMPLETION_FUNCTION
+#cmakedefine HAVE_RL_INSERT_CLOSE @HAVE_RL_INSERT_CLOSE@
+#cmakedefine HAVE_RL_READLINE_STATE
+#cmakedefine HAVE_RL_SET_KEYBOARD_INPUT_TIMEOUT
+#cmakedefine HAVE_RL_SET_PROMPT
+#cmakedefine O_PLMT
+#cmakedefine PL_ARITY_AS_SIZE
+#cmakedefine _REENTRANT
