@@ -28,4 +28,8 @@ swipl_plugin(
     C_LIBS ${Readline_LIBRARY}
     PL_LIBS readline.pl)
 
+pkg_doc(readline
+	SECTION
+	SOURCE readline.pl libreadline.tex)
+
 endif(READLINE_FOUND)
