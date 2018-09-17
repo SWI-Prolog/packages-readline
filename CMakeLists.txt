@@ -27,6 +27,9 @@ swipl_plugin(
     C_SOURCES readline4pl.c
     C_LIBS ${Readline_LIBRARY}
     PL_LIBS readline.pl)
+target_include_directories(
+    plugin_readline4pl BEFORE PRIVATE
+    ${Readline_INCLUDE_DIR})
 
 pkg_doc(readline
 	SECTION
