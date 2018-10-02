@@ -7,6 +7,9 @@ find_package(Curses)
 find_package(Readline)
 if(READLINE_FOUND)
 set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${Readline_LIBRARY})
+set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${Readline_LIBRARY})
+# Headers depend on <stdio.h>
+set(CMAKE_REQUIRED_FLAGS "-include stdio.h")
 
 AC_CHECK_HEADERS(poll.h readline/readline.h readline/history.h)
 
