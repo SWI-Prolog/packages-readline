@@ -26,16 +26,15 @@ check_symbol_exists(rl_event_hook     readline/readline.h HAVE_RL_EVENT_HOOK)
 configure_file(config.h.cmake config.h)
 
 swipl_plugin(
-    readline4pl
+    readline
+    MODULE readline4pl
     C_SOURCES readline4pl.c
     C_LIBS ${Readline_LIBRARY}
+    C_INCLUDE_DIR ${Readline_INCLUDE_DIR}
     PL_LIBS readline.pl)
-target_include_directories(
-    plugin_readline4pl BEFORE PRIVATE
-    ${Readline_INCLUDE_DIR})
 
 pkg_doc(readline
 	SECTION
-	SOURCE readline.pl libreadline.tex)
+	    SOURCE readline.pl libreadline.tex)
 
 endif(READLINE_FOUND)
