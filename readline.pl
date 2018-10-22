@@ -39,7 +39,15 @@
             rl_read_history/1
           ]).
 
+readline_ok :-
+    \+ current_prolog_flag(console_menu_version, qt),
+    \+ current_prolog_flag(readline, editline),
+    stream_property(user_input, tty(true)).
+
 :- use_foreign_library(foreign(readline4pl)).
+:- if(readline_ok).
+:- initialization rl_wrap.
+:- endif.
 
 /** <module> GNU readline interface
 

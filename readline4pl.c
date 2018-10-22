@@ -584,23 +584,9 @@ prolog_completion(const char *text, int start, int end)
 
 #undef read				/* UXNT redefinition */
 
-/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-For some obscure reasons,  notably  libreadline   6  can  show  very bad
-interactive behaviour. There is a timeout set   to  100000 (0.1 sec). It
-isn't particularly clear what this timeout is doing. I _think_ it should
-be synchronized PL_dispatch_hook(),  and  set  to   0  if  this  hook is
-non-null.
-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
-
-#ifdef __WINDOWS__
-#define isatty(fd) TRUE
-#endif
-
-install_t
-install_readline4pl(void)
-{ PL_license("gpl", "GNU Readline library");
-
-  if ( isatty(0) )
+static foreign_t
+pl_rl_wrap(void)
+{ if ( isatty(0) )
   { rl_catch_signals = 0;
     rl_readline_name = "Prolog";
     rl_attempted_completion_function = prolog_completion;
@@ -628,6 +614,25 @@ install_readline4pl(void)
     PL_set_prolog_flag("tty_control", PL_BOOL, TRUE);
   }
 
+  return TRUE;
+}
+
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+For some obscure reasons,  notably  libreadline   6  can  show  very bad
+interactive behaviour. There is a timeout set   to  100000 (0.1 sec). It
+isn't particularly clear what this timeout is doing. I _think_ it should
+be synchronized PL_dispatch_hook(),  and  set  to   0  if  this  hook is
+non-null.
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
+#ifdef __WINDOWS__
+#define isatty(fd) TRUE
+#endif
+
+install_t
+install_readline4pl(void)
+{ PL_license("gpl", "GNU Readline library");
+
 #define PRED(name, arity, func, attr) \
 	PL_register_foreign_in_module("system", name, arity, func, attr)
 
@@ -635,5 +640,6 @@ install_readline4pl(void)
   PRED("rl_add_history",    1, pl_rl_add_history,    PL_FA_NOTRACE);
   PRED("rl_write_history",  1, pl_rl_write_history,  0);
   PRED("rl_read_history",   1, pl_rl_read_history,   0);
+  PRED("rl_wrap",           0, pl_rl_wrap,           0);
 }
 
