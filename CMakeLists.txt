@@ -5,6 +5,17 @@ include("../cmake/PrologPackage.cmake")
 
 find_package(Curses)
 find_package(Readline)
+
+if(APPLE AND
+   READLINE_FOUND AND
+   NOT Readline_INCLUDE_DIR MATCHES "/local/")
+  message(WARNING "Found readline at ${Readline_INCLUDE_DIR}, which
+	  looks like Apple readline.  We need GNU readline.  Dropping
+	  the readline interface")
+  set(READLINE_FOUND OFF CACHE BOOL
+      "Forced readline to OFF because headers come from Apple" FORCE)
+endif()
+
 if(READLINE_FOUND)
 set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${Readline_LIBRARY})
 set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${Readline_LIBRARY})
