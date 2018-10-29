@@ -17,18 +17,12 @@
 #  Readline_INCLUDE_DIR      The readline include directories.
 #  Readline_LIBRARY          The readline library.
 
-find_path(Readline_ROOT
-    NAMES include/readline/readline.h
+find_library(Readline_LIBRARY
+    NAMES readline
 )
 
 find_path(Readline_INCLUDE_DIR
     NAMES readline/readline.h
-    HINTS ${Readline_ROOT}/include
-)
-
-find_library(Readline_LIBRARY
-    NAMES readline
-    HINTS ${Readline_ROOT}/lib
 )
 
 if(Readline_INCLUDE_DIR AND Readline_LIBRARY AND FOUND_CURSES)
