@@ -3,6 +3,7 @@ project(swipl-readline)
 
 include("../cmake/PrologPackage.cmake")
 
+cmake_policy(SET CMP0074 NEW)
 find_package(Curses)
 find_package(Readline)
 
