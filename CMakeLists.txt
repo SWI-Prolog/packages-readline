@@ -24,6 +24,7 @@ set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${Readline_LIBRARY})
 set(CMAKE_REQUIRED_LIBRARIES ${CMAKE_REQUIRED_LIBRARIES} ${Readline_LIBRARY})
 # Headers depend on <stdio.h>
 set(CMAKE_REQUIRED_FLAGS "-include stdio.h")
+set(CMAKE_REQUIRED_INCLUDES ${CMAKE_REQUIRED_INCLUDES} ${Readline_INCLUDE_DIR})
 
 AC_CHECK_HEADERS(poll.h readline/readline.h readline/history.h)
 
