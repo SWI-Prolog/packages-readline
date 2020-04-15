@@ -17,5 +17,4 @@
 #cmakedefine HAVE_RL_SET_KEYBOARD_INPUT_TIMEOUT
 #cmakedefine HAVE_RL_SET_PROMPT
 #cmakedefine O_PLMT
-#cmakedefine PL_ARITY_AS_SIZE
 #cmakedefine _REENTRANT
