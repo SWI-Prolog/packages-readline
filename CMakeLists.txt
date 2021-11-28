@@ -12,6 +12,7 @@ find_package(Readline)
 if(APPLE AND
    READLINE_FOUND AND
    NOT Readline_INCLUDE_DIR MATCHES "/local/" AND
+   NOT Readline_INCLUDE_DIR MATCHES "/opt/homebrew/" AND
    NOT Readline_INCLUDE_DIR MATCHES "${MACOSX_DEPENDENCIES_FROM}")
   message(WARNING "Found readline at ${Readline_INCLUDE_DIR}, which
 	  looks like Apple readline.  We need GNU readline.  Dropping
