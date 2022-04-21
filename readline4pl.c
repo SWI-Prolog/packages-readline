@@ -136,7 +136,7 @@ pl_rl_read_init_file(term_t file)
   if ( PL_get_file_name(file, &f, 0) )
   {
 #ifdef O_XOS
-    char buf[MAXPATHLEN];
+    char buf[PATH_MAX];
     rl_read_init_file(_xos_os_filename(f, buf));
 #else
     rl_read_init_file(f);
